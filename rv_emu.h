@@ -81,25 +81,24 @@ struct cache_st
   int slots_used;
 };
 
-typedef struct
-{
-  uint64_t regs[RV_NUM_REGS];
-  uint64_t pc;
+struct rv_state {
+	uint64_t regs[RV_NUM_REGS];
+	uint64_t pc;
 
-  uint8_t stack[STACK_SIZE];
+	uint8_t stack[STACK_SIZE];
 
-  bool analyze;
-  bool cache_sim;
-  bool verbose;
+	bool analyze;
+	bool cache_sim;
+	bool verbose;
 
-  rv_analysis analysis;
-  struct cache_st i_cache;
-} rv_state;
+	rv_analysis analysis;
+	struct cache_st i_cache;
+};
 
 
-void rv_init (rv_state * state, uint32_t * target,
+void rv_init (struct rv_state * state, uint32_t * target,
 	      uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3);
-uint64_t rv_emulate (rv_state * state);
+uint64_t rv_emulate (struct rv_state * state);
 void rv_print (rv_analysis * analysis);
 
 void cache_init (struct cache_st *csp);

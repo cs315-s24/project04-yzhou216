@@ -23,7 +23,7 @@ void print_array(char *prefix, int *arr, int len)
 	printf("\n");
 }
 
-void fib_rec_test(int start_arg, char **argv, rv_state * state)
+void fib_rec_test(int start_arg, char **argv, struct rv_state * state)
 {
 	int r;
 	int n = atoi(argv[start_arg]);
@@ -39,7 +39,7 @@ void fib_rec_test(int start_arg, char **argv, rv_state * state)
 	printf("Emu: %d\n", r);
 }
 
-void get_bitseq_test(int start_arg, char **argv, rv_state * state)
+void get_bitseq_test(int start_arg, char **argv, struct rv_state * state)
 {
 	int r;
 	int n = atoi(argv[start_arg]);
@@ -57,7 +57,7 @@ void get_bitseq_test(int start_arg, char **argv, rv_state * state)
 	printf("Emu: %d\n", r);
 }
 
-void pal_test(int start_arg, char **argv, rv_state * state)
+void pal_test(int start_arg, char **argv, struct rv_state * state)
 {
 	bool r;
 	char *str = argv[start_arg];
@@ -74,7 +74,7 @@ void pal_test(int start_arg, char **argv, rv_state * state)
 	printf("Emu: %s\n", r ? "is a palindrome" : "is not a palindrome");
 }
 
-void int_to_str_test(int start_arg, char **argv, rv_state * state)
+void int_to_str_test(int start_arg, char **argv, struct rv_state * state)
 {
 	char output_str[MAX_ARRAY];
 
@@ -98,7 +98,7 @@ void int_to_str_test(int start_arg, char **argv, rv_state * state)
 	printf("Emu: %s\n", output_str);
 }
 
-void max3_test(int start_arg, char **argv, rv_state * state)
+void max3_test(int start_arg, char **argv, struct rv_state * state)
 {
 	int r;
 	int a = atoi(argv[start_arg]);
@@ -116,7 +116,7 @@ void max3_test(int start_arg, char **argv, rv_state * state)
 	printf("Emu: %d\n", r);
 }
 
-void midpoint_test(int start_arg, char **argv, rv_state * state)
+void midpoint_test(int start_arg, char **argv, struct rv_state * state)
 {
 	int r;
 	int start = atoi(argv[start_arg]);
@@ -133,7 +133,7 @@ void midpoint_test(int start_arg, char **argv, rv_state * state)
 	printf("Emu: %d\n", r);
 }
 
-void quadratic_test(int start_arg, char **argv, rv_state * state)
+void quadratic_test(int start_arg, char **argv, struct rv_state * state)
 {
 	int r;
 	int x = atoi(argv[start_arg]);
@@ -152,7 +152,7 @@ void quadratic_test(int start_arg, char **argv, rv_state * state)
 	printf("Emu: %d\n", r);
 }
 
-void sort_test(int start_arg, int argc, char **argv, rv_state * state)
+void sort_test(int start_arg, int argc, char **argv, struct rv_state * state)
 {
 	int tmp[MAX_ARRAY];
 	int a[MAX_ARRAY] = { 0, };
@@ -178,7 +178,7 @@ void sort_test(int start_arg, int argc, char **argv, rv_state * state)
 
 }
 
-void str_to_int_test(int start_arg, int argc, char **argv, rv_state * state)
+void str_to_int_test(int start_arg, int argc, char **argv, struct rv_state * state)
 {
 	char *str = argv[start_arg];
 	int base = 10;
@@ -201,7 +201,7 @@ void str_to_int_test(int start_arg, int argc, char **argv, rv_state * state)
 	printf("Emu: %d\n", r);
 }
 
-void to_upper_test(int start_arg, char **argv, rv_state * state)
+void to_upper_test(int start_arg, char **argv, struct rv_state * state)
 {
 	// Make a copy of the string since we modify it in place
 	char tmp[MAX_ARRAY];
@@ -222,7 +222,7 @@ void to_upper_test(int start_arg, char **argv, rv_state * state)
 	printf("Emu: %s\n", tmp);
 }
 
-int parse_params(int argc, char **argv, rv_state * state)
+int parse_params(int argc, char **argv, struct rv_state * state)
 {
 	// Parse optional command line parameters which must precede
 	// the name of the emulated program and its parameters
@@ -272,7 +272,7 @@ int main(int argc, char **argv)
 		usage();
 	}
 
-	rv_state state;
+	struct rv_state state;
 	int i = parse_params(argc, argv, &state);
 
 	if (!strcmp(argv[i], "fib_rec")) {
