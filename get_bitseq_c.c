@@ -1,20 +1,21 @@
 #include <stdint.h>
 
-uint32_t get_bitseq_c(uint32_t num, int start, int end) {
-    uint32_t val;
-    int len;
-    uint32_t mask;
+uint32_t get_bitseq_c(uint32_t num, int start, int end)
+{
+	uint32_t val;
+	int len;
+	uint32_t mask;
 
-    len = (end - start) + 1;
-    val = num >> start;
+	len = (end - start) + 1;
+	val = num >> start;
 
-    if (len == 32) {
-        mask = 0xFFFFFFFF;
-    } else {
-        mask = (0b1 << len) - 1;
-    }
+	if (len == 32) {
+		mask = 0xFFFFFFFF;
+	} else {
+		mask = (0b1 << len) - 1;
+	}
 
-    val = val & mask;
+	val = val & mask;
 
-    return val;
+	return val;
 }
