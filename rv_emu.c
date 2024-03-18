@@ -128,7 +128,7 @@ void emu_s_type(struct rv_state *rsp, uint32_t iw)
 	rsp->pc += 4;
 }
 
-void emu_uncond_j(struct rv_state *rsp, uint32_t iw)
+void emu_ucond_j(struct rv_state *rsp, uint32_t iw)
 {
 	uint32_t rd = get_bits(iw, 7, 5);
 	if (rd != 0) /* jal, link ra, else j, ra remain unchanged  */
@@ -137,7 +137,7 @@ void emu_uncond_j(struct rv_state *rsp, uint32_t iw)
 	uint32_t imm20 = get_bit(iw, 31);
 	uint32_t imm10_1 = get_bits(iw, 21, 10);
 	uint32_t imm11 = get_bit(iw, 20);
-	uint32_t imm19_12= get_bits(iw, 12, 8);
+	uint32_t imm19_12 = get_bits(iw, 12, 8);
 	uint32_t imm = (imm20 << 20) |
 		       (imm10_1 << 1) |
 		       (imm11 << 11) |
@@ -223,7 +223,7 @@ static void rv_one(struct rv_state *rsp)
 		emu_s_type(rsp, iw);
 		break;
 	case 0b1101111:
-		emu_uncond_j(rsp, iw);
+		emu_ucond_j(rsp, iw);
 		break;
 	case 0b1100111:
 		/* JALR (RET) is a variant of I-type instructions */
