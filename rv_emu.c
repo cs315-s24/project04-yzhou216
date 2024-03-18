@@ -67,6 +67,7 @@ void emu_r_type(struct rv_state *rsp, uint32_t iw)
 	}
 
 	rsp->pc += 4; /* Next instruction */
+	rsp->analysis.ir_count++;
 }
 
 void emu_i_type(struct rv_state *rsp, uint32_t iw)
@@ -86,6 +87,8 @@ void emu_i_type(struct rv_state *rsp, uint32_t iw)
 	else
 		unsupported("I-type funct3", funct3);
 	rsp->pc += 4; /* Next instruction */
+
+	rsp->analysis.ir_count++;
 }
 
 void emu_load(struct rv_state *rsp, uint32_t iw)
@@ -109,6 +112,8 @@ void emu_load(struct rv_state *rsp, uint32_t iw)
 		unsupported("I-type funct3 (load)", funct3);
 	}
 	rsp->pc += 4; /* Next instruction */
+
+	rsp->analysis.ld_count++;
 }
 
 void emu_s_type(struct rv_state *rsp, uint32_t iw)
@@ -134,6 +139,8 @@ void emu_s_type(struct rv_state *rsp, uint32_t iw)
 		unsupported("S-type funct3", funct3);
 	}
 	rsp->pc += 4;
+
+	rsp->analysis.st_count++;
 }
 
 void emu_ucond_j(struct rv_state *rsp, uint32_t iw)
@@ -153,6 +160,8 @@ void emu_ucond_j(struct rv_state *rsp, uint32_t iw)
 	int32_t signed_imm = sign_extend(imm, 21);
 
 	rsp->pc += signed_imm;
+
+	rsp->analysis.j_count++;
 }
 
 void emu_jalr(struct rv_state *rsp, uint32_t iw)
@@ -161,6 +170,8 @@ void emu_jalr(struct rv_state *rsp, uint32_t iw)
 	uint64_t val = rsp->regs[rs1];  /* Value of regs[1] */
 
 	rsp->pc = val;  /* PC = return address */
+
+	rsp->analysis.j_count++;
 }
 
 void emu_b_type(struct rv_state *rsp, uint32_t iw)
@@ -204,10 +215,13 @@ void emu_b_type(struct rv_state *rsp, uint32_t iw)
 		unsupported("B-type funct3", funct3);
 	}
 
-	if (taken)
+	if (taken) {
 		rsp->pc += signed_imm;
-	else
+		rsp->analysis.b_taken++;
+	} else {
 		rsp->pc += 4; /* Next instruction */
+		rsp->analysis.b_not_taken++;
+	}
 }
 
 static void rv_one(struct rv_state *rsp)
@@ -270,6 +284,7 @@ uint64_t rv_emulate(struct rv_state *state)
 {
 	while (state->pc != RV_STOP) {
 		rv_one(state);
+		state->analysis.i_count++;
 	}
 	return state->regs[RV_A0];
 }
