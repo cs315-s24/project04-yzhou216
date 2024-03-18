@@ -118,6 +118,7 @@ void emu_s_type(struct rv_state *rsp, uint32_t iw)
 
 void emu_jal(struct rv_state *rsp, uint32_t iw)
 {
+	uint32_t rd = get_bits(iw, 7, 5);
 	uint32_t imm20 = get_bit(iw, 31);
 	uint32_t imm10_1 = get_bits(iw, 21, 10);
 	uint32_t imm11 = get_bit(iw, 20);
@@ -128,7 +129,7 @@ void emu_jal(struct rv_state *rsp, uint32_t iw)
 		       (imm19_12 << 12);
 	int32_t signed_imm = sign_extend(imm, 21);
 
-	rsp->regs[RV_RA] = rsp->pc + 4;
+	rsp->regs[rd] = rsp->pc + 4;
 	rsp->pc += signed_imm;
 }
 
