@@ -48,11 +48,11 @@ void cache_print(struct cache *csp, char *name)
 
 	printf("=== Cache %s\n", name);
 	printf("Type          = ");
-	if (csp->type == CACHE_DM) {
+	if (csp->type == CACHE_DM)
 		printf("direct mapped\n");
-	} else if (csp->type == CACHE_SA) {
+	else if (csp->type == CACHE_SA)
 		printf("set associative\n");
-	}
+
 	printf("Size          = %d slots\n", csp->size);
 	printf("Block size    = %d words\n", csp->block_size);
 	printf("Ways          = %d\n", csp->ways);
@@ -63,7 +63,7 @@ void cache_print(struct cache *csp, char *name)
 	       ((double)csp->misses / (double)csp->refs) * 100.00);
 	printf("Misses (cold) = %d\n", csp->misses_cold);
 	printf("Misses (hot)  = %d\n", csp->misses_hot);
-	printf("%% Used        = %.2f%%\n",
+	printf("%% Used       = %.2f%%\n",
 	       ((double)num_slots_used / (double)csp->size) * 100.0);
 }
 
@@ -91,7 +91,6 @@ uint32_t cache_lookup_dm(struct cache *csp, uint64_t addr)
 
 		verbose("  cache tag hit for index %d tag %X addr %lX\n",
 			index, tag, addr);
-
 	} else {
 		/* miss */
 		csp->misses += 1;
@@ -105,7 +104,6 @@ uint32_t cache_lookup_dm(struct cache *csp, uint64_t addr)
 			verbose
 			    ("  cache tag (%X) miss for index %d tag %X addr %X (hot)\n",
 			     slot->tag, index, tag, addr);
-
 		}
 		slot->valid = 1;
 		slot->tag = tag;
