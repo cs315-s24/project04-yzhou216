@@ -38,6 +38,12 @@ void emu_r_type(struct rv_state *rsp, uint32_t iw)
 		else
 			unsupported("R-type funct7", funct7);
 		break;
+	case 0b100:
+		if (funct7 == 0b0000001) /* DIV */
+			rsp->regs[rd] = rsp->regs[rs1] / rsp->regs[rs2];
+		else
+			unsupported("R-type funct7", funct7);
+		break;
 	case 0b101:
 		if (funct7 == 0b0000000) /* SRL */
 			rsp->regs[rd] = rsp->regs[rs1] >> rsp->regs[rs2];
