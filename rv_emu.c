@@ -182,34 +182,32 @@ void emu_b_type(struct rv_state *rsp, uint32_t iw)
 	int64_t signed_rs2_val = (int64_t)rsp->regs[rs2];
 	int32_t signed_imm = sign_extend(imm, 13);
 
+	bool taken = false;
 	switch (funct3) {
 	case 0b000: /* BEQ */
 		if (signed_rs1_val == signed_rs2_val)
-			rsp->pc += signed_imm; /* jump to label */
-		else
-			rsp->pc += 4; /* Next instruction */
+			taken = signed_imm;
 		break;
 	case 0b001: /* BNE */
 		if (signed_rs1_val != signed_rs2_val)
-			rsp->pc += signed_imm;
-		else
-			rsp->pc += 4; /* Next instruction */
+			taken = signed_imm;
 		break;
 	case 0b100: /* BLT */
 		if (signed_rs1_val < signed_rs2_val)
-			rsp->pc += signed_imm; /* jump to label */
-		else
-			rsp->pc += 4; /* Next instruction */
+			taken = signed_imm;
 		break;
 	case 0b101: /* BGE */
 		if (signed_rs1_val > signed_rs2_val)
-			rsp->pc += signed_imm; /* jump to label */
-		else
-			rsp->pc += 4; /* Next instruction */
+			taken = signed_imm;
 		break;
 	default:
 		unsupported("B-type funct3", funct3);
 	}
+
+	if (taken)
+		rsp->pc += signed_imm;
+	else
+		rsp->pc += 4; /* Next instruction */
 }
 
 static void rv_one(struct rv_state *rsp)
