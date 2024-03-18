@@ -56,15 +56,15 @@ enum cache_type {
 #define CACHE_MAX_SLOTS 4096
 #define CACHE_MAX_BLOCK_SIZE 4
 
-struct cache_slot_st {
+struct cache_slot {
 	uint64_t valid;
 	uint64_t tag;
 	uint32_t block[CACHE_MAX_BLOCK_SIZE];
 	uint64_t timestamp;
 };
 
-struct cache_st {
-	struct cache_slot_st slots[CACHE_MAX_SLOTS];
+struct cache {
+	struct cache_slot slots[CACHE_MAX_SLOTS];
 	enum cache_type type;
 	int size;
 	int ways;
@@ -92,7 +92,7 @@ struct rv_state {
 	bool verbose;
 
 	struct rv_analysis analysis;
-	struct cache_st i_cache;
+	struct cache i_cache;
 };
 
 
@@ -101,9 +101,9 @@ void rv_init(struct rv_state *state, uint32_t *target,
 uint64_t rv_emulate(struct rv_state *state);
 void rv_print(struct rv_analysis *analysis);
 
-void cache_init(struct cache_st *csp);
-uint32_t cache_lookup(struct cache_st *csp, uint64_t addr);
-void cache_print(struct cache_st *csp, char *name);
+void cache_init(struct cache *csp);
+uint32_t cache_lookup(struct cache *csp, uint64_t addr);
+void cache_print(struct cache *csp, char *name);
 
 /* Logging */
 void verbose(char *fmt, ...);

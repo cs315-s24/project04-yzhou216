@@ -9,21 +9,19 @@ extern bool g_verbose;
 
 void copy_array(int *dst, int *src, int len)
 {
-	for (int i = 0; i < len; i++) {
+	for (int i = 0; i < len; i++)
 		dst[i] = src[i];
-	}
 }
 
 void print_array(char *prefix, int *arr, int len)
 {
 	printf("%s", prefix);
-	for (int i = 0; i < len; i++) {
+	for (int i = 0; i < len; i++)
 		printf(" %d", arr[i]);
-	}
 	printf("\n");
 }
 
-void fib_rec_test(int start_arg, char **argv, struct rv_state * state)
+void fib_rec_test(int start_arg, char **argv, struct rv_state *state)
 {
 	int r;
 	int n = atoi(argv[start_arg]);
@@ -34,12 +32,12 @@ void fib_rec_test(int start_arg, char **argv, struct rv_state * state)
 	r = fib_rec_s(n);
 	printf("Asm: %d\n", r);
 
-	rv_init(state, (uint32_t *) fib_rec_s, n, 0, 0, 0);
+	rv_init(state, (uint32_t *)fib_rec_s, n, 0, 0, 0);
 	r = rv_emulate(state);
 	printf("Emu: %d\n", r);
 }
 
-void get_bitseq_test(int start_arg, char **argv, struct rv_state * state)
+void get_bitseq_test(int start_arg, char **argv, struct rv_state *state)
 {
 	int r;
 	int n = atoi(argv[start_arg]);
@@ -52,12 +50,12 @@ void get_bitseq_test(int start_arg, char **argv, struct rv_state * state)
 	r = get_bitseq_s(n, start, end);
 	printf("Asm: %d\n", r);
 
-	rv_init(state, (uint32_t *) get_bitseq_s, n, start, end, 0);
+	rv_init(state, (uint32_t *)get_bitseq_s, n, start, end, 0);
 	r = rv_emulate(state);
 	printf("Emu: %d\n", r);
 }
 
-void pal_test(int start_arg, char **argv, struct rv_state * state)
+void pal_test(int start_arg, char **argv, struct rv_state *state)
 {
 	bool r;
 	char *str = argv[start_arg];
@@ -69,12 +67,12 @@ void pal_test(int start_arg, char **argv, struct rv_state * state)
 	r = pal_rec_s(str, 0, end);
 	printf("Asm: %s\n", r ? "is a palindrome" : "is not a palindrome");
 
-	rv_init(state, (uint32_t *) pal_rec_s, (uint64_t) str, 0, end, 0);
+	rv_init(state, (uint32_t *)pal_rec_s, (uint64_t)str, 0, end, 0);
 	r = rv_emulate(state);
 	printf("Emu: %s\n", r ? "is a palindrome" : "is not a palindrome");
 }
 
-void int_to_str_test(int start_arg, char **argv, struct rv_state * state)
+void int_to_str_test(int start_arg, char **argv, struct rv_state *state)
 {
 	char output_str[MAX_ARRAY];
 
@@ -92,13 +90,13 @@ void int_to_str_test(int start_arg, char **argv, struct rv_state * state)
 	printf("Asm: %s\n", output_str);
 
 	memset(output_str, 0, sizeof(output_str));
-	rv_init(state, (uint32_t *) int_to_str_s, value, (uint64_t) output_str,
+	rv_init(state, (uint32_t *)int_to_str_s, value, (uint64_t)output_str,
 		base, 0);
 	rv_emulate(state);
 	printf("Emu: %s\n", output_str);
 }
 
-void max3_test(int start_arg, char **argv, struct rv_state * state)
+void max3_test(int start_arg, char **argv, struct rv_state *state)
 {
 	int r;
 	int a = atoi(argv[start_arg]);
@@ -111,12 +109,12 @@ void max3_test(int start_arg, char **argv, struct rv_state * state)
 	r = max3_s(a, b, c);
 	printf("Asm: %d\n", r);
 
-	rv_init(state, (uint32_t *) max3_s, a, b, c, 0);
+	rv_init(state, (uint32_t *)max3_s, a, b, c, 0);
 	r = rv_emulate(state);
 	printf("Emu: %d\n", r);
 }
 
-void midpoint_test(int start_arg, char **argv, struct rv_state * state)
+void midpoint_test(int start_arg, char **argv, struct rv_state *state)
 {
 	int r;
 	int start = atoi(argv[start_arg]);
@@ -128,12 +126,12 @@ void midpoint_test(int start_arg, char **argv, struct rv_state * state)
 	r = midpoint_s(start, end);
 	printf("Asm: %d\n", r);
 
-	rv_init(state, (uint32_t *) midpoint_s, start, end, 0, 0);
+	rv_init(state, (uint32_t *)midpoint_s, start, end, 0, 0);
 	r = rv_emulate(state);
 	printf("Emu: %d\n", r);
 }
 
-void quadratic_test(int start_arg, char **argv, struct rv_state * state)
+void quadratic_test(int start_arg, char **argv, struct rv_state *state)
 {
 	int r;
 	int x = atoi(argv[start_arg]);
@@ -147,12 +145,12 @@ void quadratic_test(int start_arg, char **argv, struct rv_state * state)
 	r = quadratic_s(x, a, b, c);
 	printf("Asm: %d\n", r);
 
-	rv_init(state, (uint32_t *) quadratic_s, x, a, b, c);
+	rv_init(state, (uint32_t *)quadratic_s, x, a, b, c);
 	r = rv_emulate(state);
 	printf("Emu: %d\n", r);
 }
 
-void sort_test(int start_arg, int argc, char **argv, struct rv_state * state)
+void sort_test(int start_arg, int argc, char **argv, struct rv_state *state)
 {
 	int tmp[MAX_ARRAY];
 	int a[MAX_ARRAY] = { 0, };
@@ -172,13 +170,13 @@ void sort_test(int start_arg, int argc, char **argv, struct rv_state * state)
 	print_array("Asm:", tmp, len);
 
 	copy_array(tmp, a, len);
-	rv_init(state, (uint32_t *) sort_s, (uint64_t) tmp, len, 0, 0);
+	rv_init(state, (uint32_t *)sort_s, (uint64_t)tmp, len, 0, 0);
 	rv_emulate(state);
 	print_array("Emu:", tmp, len);
 
 }
 
-void str_to_int_test(int start_arg, int argc, char **argv, struct rv_state * state)
+void str_to_int_test(int start_arg, int argc, char **argv, struct rv_state *state)
 {
 	char *str = argv[start_arg];
 	int base = 10;
@@ -196,14 +194,14 @@ void str_to_int_test(int start_arg, int argc, char **argv, struct rv_state * sta
 	r = str_to_int_s(str, base);
 	printf("Asm: %d\n", r);
 
-	rv_init(state, (uint32_t *) str_to_int_s, (uint64_t) str, base, 0, 0);
+	rv_init(state, (uint32_t *)str_to_int_s, (uint64_t)str, base, 0, 0);
 	r = rv_emulate(state);
 	printf("Emu: %d\n", r);
 }
 
-void to_upper_test(int start_arg, char **argv, struct rv_state * state)
+void to_upper_test(int start_arg, char **argv, struct rv_state *state)
 {
-	// Make a copy of the string since we modify it in place
+	/* Make a copy of the string since we modify it in place */
 	char tmp[MAX_ARRAY];
 	char *str = argv[start_arg];
 
@@ -216,16 +214,18 @@ void to_upper_test(int start_arg, char **argv, struct rv_state * state)
 	printf("Asm: %s\n", tmp);
 
 	strncpy(tmp, str, MAX_ARRAY);
-	rv_init(state, (uint32_t *) to_upper_s, (uint64_t) str, (uint64_t) tmp,
+	rv_init(state, (uint32_t *)to_upper_s, (uint64_t)str, (uint64_t)tmp,
 		0, 0);
 	rv_emulate(state);
 	printf("Emu: %s\n", tmp);
 }
 
-int parse_params(int argc, char **argv, struct rv_state * state)
+int parse_params(int argc, char **argv, struct rv_state *state)
 {
-	// Parse optional command line parameters which must precede
-	// the name of the emulated program and its parameters
+	/*
+	 * Parse optional command line parameters which must precede
+	 * the name of the emulated program and its parameters
+	 */
 	state->analyze = false;
 	state->cache_sim = false;
 	state->i_cache.type = CACHE_NONE;
@@ -233,8 +233,10 @@ int parse_params(int argc, char **argv, struct rv_state * state)
 	int i;
 	for (i = 1; i < argc; i++) {
 		if (argv[i][0] != '-') {
-			// Return the index of the first non-optional parameter,
-			// which is the name of the emulated program
+			/*
+			 * Return the index of the first non-optional parameter,
+			 * which is the name of the emulated program
+			 */
 			break;
 		} else if (!strcmp(argv[i], "-a")) {
 			state->analyze = true;
@@ -268,44 +270,40 @@ void usage()
 
 int main(int argc, char **argv)
 {
-	if (argc == 1) {
+	if (argc == 1)
 		usage();
-	}
 
 	struct rv_state state;
 	int i = parse_params(argc, argv, &state);
 
-	if (!strcmp(argv[i], "fib_rec")) {
+	if (!strcmp(argv[i], "fib_rec"))
 		fib_rec_test(i + 1, argv, &state);
-	} else if (!strcmp(argv[i], "get_bitseq")) {
+	else if (!strcmp(argv[i], "get_bitseq"))
 		get_bitseq_test(i + 1, argv, &state);
-	} else if (!strcmp(argv[i], "int_to_str")) {
+	else if (!strcmp(argv[i], "int_to_str"))
 		int_to_str_test(i + 1, argv, &state);
-	} else if (!strcmp(argv[i], "is_pal")) {
+	else if (!strcmp(argv[i], "is_pal"))
 		pal_test(i + 1, argv, &state);
-	} else if (!strcmp(argv[i], "max3")) {
+	else if (!strcmp(argv[i], "max3"))
 		max3_test(i + 1, argv, &state);
-	} else if (!strcmp(argv[i], "midpoint")) {
+	else if (!strcmp(argv[i], "midpoint"))
 		midpoint_test(i + 1, argv, &state);
-	} else if (!strcmp(argv[i], "quadratic")) {
+	else if (!strcmp(argv[i], "quadratic"))
 		quadratic_test(i + 1, argv, &state);
-	} else if (!strcmp(argv[i], "sort")) {
+	else if (!strcmp(argv[i], "sort"))
 		sort_test(i + 1, argc, argv, &state);
-	} else if (!strcmp(argv[i], "str_to_int")) {
+	else if (!strcmp(argv[i], "str_to_int"))
 		str_to_int_test(i + 1, argc, argv, &state);
-	} else if (!strcmp(argv[i], "to_upper")) {
+	else if (!strcmp(argv[i], "to_upper"))
 		to_upper_test(i + 1, argv, &state);
-	} else {
+	else
 		usage();
-	}
 
-	if (state.analyze) {
+	if (state.analyze)
 		rv_print(&state.analysis);
-	}
 
-	if (state.cache_sim) {
+	if (state.cache_sim)
 		cache_print(&state.i_cache, "(I)");
-	}
 
 	return 0;
 }
