@@ -74,6 +74,28 @@ void emu_i_type(struct rv_state *rsp, uint32_t iw)
         rsp->pc += 4; /* Next instruction */
 }
 
+void emu_s_type(struct rv_state *rsp, uint32_t iw)
+{
+	uint32_t imm4_0 = get_bits(iw, 7, 5);
+	uint32_t imm11_5 = get_bits(iw, 25, 7);
+	uint32_t imm = imm4_0 | (imm11_5 << 5);
+	uint32_t rs1 = get_bits(iw, 15, 5);
+	uint32_t rs2 = get_bits(iw, 20, 5);
+	uint32_t funct3 = get_bits(iw, 12, 3);
+	uint64_t offset_rs1 = (uint64_t)((uint8_t *)rsp->regs[rs1] + imm);
+	switch (funct3) {
+	case 0b000: /* SB */
+		*((uint8_t *)offset_rs1) = rsp->regs[rs2];
+		break;
+	case 0b011: /* SD */
+		*((uint64_t *)offset_rs1) = rsp->regs[rs2];
+		break;
+	default:
+                unsupported("S-type funct3", funct3);
+	}
+	rsp->pc += 4;
+}
+
 void emu_jalr(struct rv_state *rsp, uint32_t iw)
 {
         uint32_t rs1 = get_bits(iw, 15, 5);  /* Will be ra (aka x1) */
@@ -137,6 +159,9 @@ static void rv_one(struct rv_state *rsp)
         case 0b0010011:
                 emu_i_type(rsp, iw);
                 break;
+	case 0b0100011:
+		emu_s_type(rsp, iw);
+		break;
         case 0b1100111:
                 /* JALR (RET) is a variant of I-type instructions */
                 emu_jalr(rsp, iw);
