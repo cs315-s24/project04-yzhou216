@@ -264,7 +264,7 @@ void rv_init(struct rv_state *state, uint32_t *target,
 	state->regs[RV_RA] = RV_STOP;
 	state->regs[RV_SP] = (uint64_t) & state->stack[STACK_SIZE];
 
-	memset(&state->analysis, 0, sizeof(rv_analysis));
+	memset(&state->analysis, 0, sizeof(struct rv_analysis));
 	cache_init(&state->i_cache);
 }
 
@@ -285,7 +285,7 @@ static void print_pct(char *fmt, int numer, int denom)
 	printf(fmt, numer, pct);
 }
 
-void rv_print(rv_analysis *a)
+void rv_print(struct rv_analysis *a)
 {
 	int b_total = a->b_taken + a->b_not_taken;
 
