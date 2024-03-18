@@ -97,6 +97,9 @@ void emu_load(struct rv_state *rsp, uint32_t iw)
 	case 0b000: /* LB */
 		rsp->regs[rd] = *((uint8_t *)offset_rs1);
 		break;
+	case 0b010: /* LW */
+		rsp->regs[rd] = *((uint32_t *)offset_rs1);
+		break;
 	case 0b011: /* LD */
 		rsp->regs[rd] = *((uint64_t *)offset_rs1);
 		break;
