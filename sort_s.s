@@ -40,7 +40,7 @@ loop:
 	ld t0, 8(sp)
 
 	add t3, t6, t0      # idx
-	sll t6, t3, 2       # offset
+	slli t6, t3, 2      # offset
 	add t4, a0, t6      # &arr[idx]
 	lw t2, (t1)         # arr[i]
 	lw t5, (t4)         # arr[idx]
