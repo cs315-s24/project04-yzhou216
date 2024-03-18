@@ -79,6 +79,8 @@ void emu_i_type(struct rv_state *rsp, uint32_t iw)
 	uint32_t imm = get_bits(iw, 20, 12);
 	if (funct3 == 0b101 && funct7 == 0b0)
 		rsp->regs[rd] = rsp->regs[rs1] >> shamt;
+	else if (funct3 == 0b001 && funct7 == 0b0) /* SLLI */
+		rsp->regs[rd] = rsp->regs[rs1] << shamt;
 	else if (funct3 == 0b000)
 		rsp->regs[rd] = rsp->regs[rs1] + sign_extend(imm, 12);
 	else
