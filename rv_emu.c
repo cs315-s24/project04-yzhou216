@@ -128,21 +128,23 @@ void emu_s_type(struct rv_state *rsp, uint32_t iw)
 	rsp->pc += 4;
 }
 
-void emu_jal(struct rv_state *rsp, uint32_t iw)
+void emu_uncond_j(struct rv_state *rsp, uint32_t iw)
 {
 	uint32_t rd = get_bits(iw, 7, 5);
+	if (rd != 0) /* jal, link ra, else j, ra remain unchanged  */
+		rsp->regs[rd] = (uint64_t)rsp->pc + 4;
+
 	uint32_t imm20 = get_bit(iw, 31);
 	uint32_t imm10_1 = get_bits(iw, 21, 10);
 	uint32_t imm11 = get_bit(iw, 20);
 	uint32_t imm19_12= get_bits(iw, 12, 8);
-	uint32_t imm = (imm20 << 20) |
-		       (imm10_1 << 1) |
-		       (imm11 << 11) |
-		       (imm19_12 << 12);
-	int32_t signed_imm = sign_extend(imm, 21);
+	uint32_t imm = (imm20 << 19) |
+		       (imm10_1) |
+		       (imm11 << 10) |
+		       (imm19_12 << 11);
+	int32_t signed_imm = sign_extend(imm, 20);
 
-	rsp->regs[rd] = rsp->pc + 4;
-	rsp->pc += signed_imm;
+	rsp->pc += signed_imm * 2;
 }
 
 void emu_jalr(struct rv_state *rsp, uint32_t iw)
@@ -221,7 +223,7 @@ static void rv_one(struct rv_state *rsp)
 		emu_s_type(rsp, iw);
 		break;
 	case 0b1101111:
-		emu_jal(rsp, iw);
+		emu_uncond_j(rsp, iw);
 		break;
 	case 0b1100111:
 		/* JALR (RET) is a variant of I-type instructions */
