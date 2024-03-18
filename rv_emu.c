@@ -74,6 +74,26 @@ void emu_i_type(struct rv_state *rsp, uint32_t iw)
         rsp->pc += 4; /* Next instruction */
 }
 
+void emu_load(struct rv_state *rsp, uint32_t iw)
+{
+	uint32_t rs1 = get_bits(iw, 15, 5);
+	uint32_t rd = get_bits(iw, 7, 5);
+	uint32_t funct3 = get_bits(iw, 12, 3);
+	uint32_t imm = get_bits(iw, 20, 12);
+	uint64_t offset_rs1 = (uint64_t)((uint8_t *)rsp->regs[rs1] + imm);
+	switch (funct3) {
+	case 0b000: /* LB */
+		rsp->regs[rd] = *((uint8_t *)offset_rs1);
+		break;
+	case 0b011: /* LD */
+		rsp->regs[rd] = *((uint64_t *)offset_rs1);
+		break;
+	default:
+		unsupported("I-type funct3 (load)", funct3);
+	}
+	rsp->pc += 4; /* Next instruction */
+}
+
 void emu_s_type(struct rv_state *rsp, uint32_t iw)
 {
 	uint32_t imm4_0 = get_bits(iw, 7, 5);
@@ -175,6 +195,9 @@ static void rv_one(struct rv_state *rsp)
         case 0b0010011:
                 emu_i_type(rsp, iw);
                 break;
+	case 0b0000011: /* variant of I-type instructions */
+		emu_load(rsp, iw);
+		break;
 	case 0b0100011:
 		emu_s_type(rsp, iw);
 		break;
