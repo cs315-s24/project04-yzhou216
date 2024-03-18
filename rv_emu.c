@@ -138,13 +138,13 @@ void emu_uncond_j(struct rv_state *rsp, uint32_t iw)
 	uint32_t imm10_1 = get_bits(iw, 21, 10);
 	uint32_t imm11 = get_bit(iw, 20);
 	uint32_t imm19_12= get_bits(iw, 12, 8);
-	uint32_t imm = (imm20 << 19) |
-		       (imm10_1) |
-		       (imm11 << 10) |
-		       (imm19_12 << 11);
-	int32_t signed_imm = sign_extend(imm, 20);
+	uint32_t imm = (imm20 << 20) |
+		       (imm10_1 << 1) |
+		       (imm11 << 11) |
+		       (imm19_12 << 12);
+	int32_t signed_imm = sign_extend(imm, 21);
 
-	rsp->pc += signed_imm * 2;
+	rsp->pc += signed_imm;
 }
 
 void emu_jalr(struct rv_state *rsp, uint32_t iw)
