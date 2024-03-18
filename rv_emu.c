@@ -187,6 +187,12 @@ void emu_b_type(struct rv_state *rsp, uint32_t iw)
 		else
 			rsp->pc += 4; /* Next instruction */
 		break;
+	case 0b101: /* BGE */
+		if (signed_rs1_val > signed_rs2_val)
+			rsp->pc += signed_imm; /* jump to label */
+		else
+			rsp->pc += 4; /* Next instruction */
+		break;
 	case 0b001: /* BNE */
 		if (signed_rs1_val != signed_rs2_val)
 			rsp->pc += signed_imm;
