@@ -124,6 +124,9 @@ void emu_s_type(struct rv_state *rsp, uint32_t iw)
 	case 0b000: /* SB */
 		*((uint8_t *)offset_rs1) = rsp->regs[rs2];
 		break;
+	case 0b010: /* SW */
+		*((uint32_t *)offset_rs1) = rsp->regs[rs2];
+		break;
 	case 0b011: /* SD */
 		*((uint64_t *)offset_rs1) = rsp->regs[rs2];
 		break;
