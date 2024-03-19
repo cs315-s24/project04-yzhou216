@@ -130,6 +130,18 @@ uint32_t cache_lookup_dm(struct cache *csp, uint64_t addr)
 	return data;
 }
 
+struct cache_slot *find_lru_slot_in_set(struct cache *csp, uint32_t set_base)
+{
+	struct cache_slot *low = &csp->slots[set_base];
+	low->timestamp = csp->refs;
+	for (int i = 0; i < csp->ways; i++) {
+		struct cache_slot *slot = &csp->slots[set_base + i];
+		if (slot->timestamp < low->timestamp)
+			low = slot;
+	}
+	return low;
+}
+
 uint32_t cache_lookup_sa(struct cache *csp, uint64_t addr)
 {
 	bool hit = false;
@@ -150,9 +162,9 @@ uint32_t cache_lookup_sa(struct cache *csp, uint64_t addr)
 
 	uint64_t tag = addr >> (csp->index_bits + csp->block_bits + 2);
 
-	uint64_t b_index = 1;	/* Need to change for block size > 1 */
+	uint64_t addr_word = addr >> 2;
+	uint64_t b_index = addr_word & 0b11;  /* mask off 2 bits since block size is 4 */
 
-	uint64_t b_base;
 	int set_index = (addr >> (csp->block_bits + 2)) & csp->index_mask;
 	int set_base = set_index * csp->ways;
 
@@ -189,8 +201,8 @@ uint32_t cache_lookup_sa(struct cache *csp, uint64_t addr)
 			/* Miss due to tag collision is a "hot" miss */
 			csp->misses_cold += 1;
 		} else {
-			/* Always pick first slot in set - CHANGE TO LRU */
-			slot = &(csp->slots[set_base]);
+			/* hot miss */
+			slot = find_lru_slot_in_set(csp, set_base);
 
 			verbose
 			    ("  cache tag (%X) miss for set %d tag %X addr %X (evict address %X)\n",
@@ -206,8 +218,20 @@ uint32_t cache_lookup_sa(struct cache *csp, uint64_t addr)
 	}
 
 	if (!hit) {
-		/* Need to change for block size > 1 */
-		slot->block[b_index] = *((uint32_t *)addr);
+		uint64_t block_base = addr_word - b_index;
+		/* Convert block base to a pointer to the iw in memory */
+		uint32_t *block_base_iw_ptr = (uint32_t *)(block_base << 2);
+
+		/*
+		 * Evict old data from the block and update with new data
+		 * retrieved from the memory bus
+		 */
+                for (int i = 0; i < 4; i++) {
+                        slot->block[i] = *block_base_iw_ptr;
+                        block_base_iw_ptr++; /* Move pointer by 32 bits (next iw) */
+                }
+		/* iw is now in the updated cache block */
+
 		slot->tag = tag;
 		slot->valid = true;
 	}
