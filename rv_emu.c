@@ -193,21 +193,34 @@ void emu_b_type(struct rv_state *rsp, uint32_t iw)
 	int64_t signed_rs2_val = (int64_t)rsp->regs[rs2];
 	int32_t signed_imm = sign_extend(imm, 13);
 
-	if ((signed_rs1_val < signed_rs2_val) && funct3 == 0b100) { /* BLT */
-		rsp->analysis.b_taken++;
+	bool taken = false;
+	switch (funct3) {
+	case 0b000: /* BEQ */
+		if (signed_rs1_val == signed_rs2_val)
+			taken = signed_imm;
+		break;
+	case 0b001: /* BNE */
+		if (signed_rs1_val != signed_rs2_val)
+			taken = signed_imm;
+		break;
+	case 0b100: /* BLT */
+		if (signed_rs1_val < signed_rs2_val)
+			taken = signed_imm;
+		break;
+	case 0b101: /* BGE */
+		if (signed_rs1_val > signed_rs2_val)
+			taken = signed_imm;
+		break;
+	default:
+		unsupported("B-type funct3", funct3);
+	}
+
+	if (taken) {
 		rsp->pc += signed_imm;
-	} else if ((signed_rs1_val != signed_rs2_val) && funct3 == 0b001){ /* bne */
 		rsp->analysis.b_taken++;
-		rsp->pc += signed_imm;
-	} else if ((signed_rs1_val == signed_rs2_val) && funct3 == 0b000){ /* BEQ */
-		rsp->analysis.b_taken++;
-		rsp->pc += signed_imm;
-	} else if ((signed_rs1_val >= signed_rs2_val) && funct3 == 0b101){ /* bge */
-		rsp->analysis.b_taken++;
-		rsp->pc += signed_imm;
 	} else {
+		rsp->pc += 4; /* Next instruction */
 		rsp->analysis.b_not_taken++;
-		rsp->pc += 4;
 	}
 }
 
