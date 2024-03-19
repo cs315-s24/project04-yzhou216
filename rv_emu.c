@@ -196,20 +196,16 @@ void emu_b_type(struct rv_state *rsp, uint32_t iw)
 	bool taken = false;
 	switch (funct3) {
 	case 0b000: /* BEQ */
-		if (signed_rs1_val == signed_rs2_val)
-			taken = signed_imm;
+		taken = signed_rs1_val == signed_rs2_val;
 		break;
 	case 0b001: /* BNE */
-		if (signed_rs1_val != signed_rs2_val)
-			taken = signed_imm;
+		taken = signed_rs1_val != signed_rs2_val;
 		break;
 	case 0b100: /* BLT */
-		if (signed_rs1_val < signed_rs2_val)
-			taken = signed_imm;
+		taken = signed_rs1_val < signed_rs2_val;
 		break;
 	case 0b101: /* BGE */
-		if (signed_rs1_val > signed_rs2_val)
-			taken = signed_imm;
+		taken = signed_rs1_val >= signed_rs2_val;
 		break;
 	default:
 		unsupported("B-type funct3", funct3);
