@@ -226,8 +226,8 @@ void emu_b_type(struct rv_state *rsp, uint32_t iw)
 
 static void rv_one(struct rv_state *rsp)
 {
-	uint32_t iw = *((uint32_t *)rsp->pc);
-	//iw = cache_lookup(&state->i_cache, (uint64_t) state->pc);
+	/* cache_lookup function hits memory bus if iw is not cached */
+	uint32_t iw = cache_lookup(&rsp->i_cache, (uint64_t)rsp->pc);
 
 	uint32_t opcode = get_bits(iw, 0, 7);
 
