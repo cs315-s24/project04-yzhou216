@@ -78,7 +78,7 @@ uint32_t cache_lookup_dm(struct cache *csp, uint64_t addr)
 	struct cache_slot *slot;
 	uint32_t data = 0;
 
-	uint64_t addr_word = addr << 4;
+	uint64_t addr_word = addr >> 2;
 	b_index = addr_word & 0b11;  /* mask off 2 bits since block size is 4 */
 	uint64_t block_base = addr_word - b_index;
 
