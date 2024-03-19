@@ -63,7 +63,8 @@ void cache_print(struct cache *csp, char *name)
 	       ((double)csp->misses / (double)csp->refs) * 100.00);
 	printf("Misses (cold) = %d\n", csp->misses_cold);
 	printf("Misses (hot)  = %d\n", csp->misses_hot);
-	printf("%% Used       = %.2f%%\n",
+	/* TODO: Funky format due to bad test cases. Remove later */
+	printf("%% Used        = %.2f%%\n",
 	       ((double)num_slots_used / (double)csp->size) * 100.0);
 }
 
