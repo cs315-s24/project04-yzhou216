@@ -80,7 +80,6 @@ uint32_t cache_lookup_dm(struct cache *csp, uint64_t addr)
 
 	uint64_t addr_word = addr >> 2;
 	b_index = addr_word & 0b11;  /* mask off 2 bits since block size is 4 */
-	uint64_t block_base = addr_word - b_index;
 
 	index = (addr >> (csp->block_bits + 2)) & csp->index_mask;
 	tag = addr >> (csp->index_bits + csp->block_bits + 2);
@@ -112,9 +111,20 @@ uint32_t cache_lookup_dm(struct cache *csp, uint64_t addr)
 		slot->valid = 1;
 		slot->tag = tag;
 
-		data = *((uint32_t *)addr); /* get iw by hitting memory bus */
-		slot->block[b_index] = data;
-		/* TODO: evict the rest of the block based on block_base */
+		uint64_t block_base = addr_word - b_index;
+		/* Convert block base to a pointer to the iw in memory */
+		uint32_t *block_base_iw_ptr = (uint32_t *)(block_base << 2);
+
+		/*
+		 * Evict old data from the block and update with new data
+		 * retrieved from the memory bus
+		 */
+                for (int i = 0; i < 4; i++) {
+                        slot->block[i] = *block_base_iw_ptr;
+                        block_base_iw_ptr++; /* Move pointer by 32 bits (next iw) */
+                }
+		/* iw is now in the updated cache block */
+                data = slot->block[b_index];
 	}
 
 	return data;
