@@ -133,7 +133,6 @@ uint32_t cache_lookup_dm(struct cache *csp, uint64_t addr)
 struct cache_slot *find_lru_slot_in_set(struct cache *csp, uint32_t set_base)
 {
 	struct cache_slot *low = &csp->slots[set_base];
-	low->timestamp = csp->refs;
 	for (int i = 0; i < csp->ways; i++) {
 		struct cache_slot *slot = &csp->slots[set_base + i];
 		if (slot->timestamp < low->timestamp)
