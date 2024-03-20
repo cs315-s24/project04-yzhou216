@@ -1,3 +1,4 @@
+.align 4
 .global find_max_index_s
 
 /* find_max_index_s finds the index of the largest value

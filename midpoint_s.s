@@ -1,3 +1,4 @@
+.align 4
 .global midpoint_s
 
 midpoint_s:

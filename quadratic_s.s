@@ -1,5 +1,6 @@
 #! riscv
 
+.align 4
 .global quadratic_s
 
 /* quadratic_s calculates the quadratic equation where

@@ -1,3 +1,4 @@
+.align 4
 .global to_upper_s
 
 /*

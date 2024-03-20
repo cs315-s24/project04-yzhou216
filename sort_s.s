@@ -1,3 +1,4 @@
+.align 4
 .global find_max_index_s
 .global sort_s
 

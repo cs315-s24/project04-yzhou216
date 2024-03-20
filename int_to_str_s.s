@@ -1,3 +1,4 @@
+.align 4
 .global int_to_str_s
 
 # a0: 32 bit signed integer

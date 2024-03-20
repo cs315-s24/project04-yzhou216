@@ -1,3 +1,4 @@
+.align 4
 .global fib_rec_s
 
 /*
