@@ -1,5 +1,5 @@
-.global str_to_int_s
 .align 4
+.global str_to_int_s
 
 # a0 = str at least sig place, a1 = base, a2 = len
 # returns: integer representation of the string as a signed word

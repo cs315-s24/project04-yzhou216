@@ -1,5 +1,3 @@
-#! riscv
-
 .align 4
 .global quadratic_s
 
