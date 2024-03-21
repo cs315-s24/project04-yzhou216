@@ -119,7 +119,7 @@ uint32_t cache_lookup_dm(struct cache *csp, uint64_t addr)
 		 * Evict old data from the block and update with new data
 		 * retrieved from the memory bus
 		 */
-                for (int i = 0; i < 4; i++) {
+                for (int i = 0; i <  CACHE_MAX_BLOCK_SIZE; i++) {
                         slot->block[i] = *block_base_iw_ptr;
                         block_base_iw_ptr++; /* Move pointer by 32 bits (next iw) */
                 }
@@ -225,7 +225,7 @@ uint32_t cache_lookup_sa(struct cache *csp, uint64_t addr)
 		 * Evict old data from the block and update with new data
 		 * retrieved from the memory bus
 		 */
-                for (int i = 0; i < 4; i++) {
+                for (int i = 0; i < CACHE_MAX_BLOCK_SIZE; i++) {
                         slot->block[i] = *block_base_iw_ptr;
                         block_base_iw_ptr++; /* Move pointer by 32 bits (next iw) */
                 }
@@ -245,11 +245,16 @@ uint32_t cache_lookup_sa(struct cache *csp, uint64_t addr)
 uint32_t cache_lookup(struct cache *csp, uint64_t addr)
 {
 	uint32_t data;
-	if (csp->type == CACHE_DM)
+	switch (csp->type) {
+	case CACHE_DM:
 		data = cache_lookup_dm(csp, addr);
-	else if (csp->type == CACHE_SA)
+		break;
+	case CACHE_SA:
 		data = cache_lookup_sa(csp, addr);
-	else
+		break;
+	default:
 		data = *((uint32_t *)addr);
+		break;
+	}
 	return data;
 }
