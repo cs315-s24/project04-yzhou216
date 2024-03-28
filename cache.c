@@ -68,6 +68,27 @@ void cache_print(struct cache *csp, char *name)
 	       ((double)num_slots_used / (double)csp->size) * 100.0);
 }
 
+uint32_t evict_data_in_cache_block(struct cache *csp, struct cache_slot *slot,
+				   uint64_t addr_word, uint64_t b_index)
+{
+		uint64_t block_base = addr_word - b_index;
+		/* Convert block base to a pointer to the iw in memory */
+		uint32_t *block_base_iw_ptr = (uint32_t *)(block_base << 2);
+
+		/*
+		 * Evict old data from the block and update with new data
+		 * retrieved from the memory bus
+		 */
+                for (int i = 0; i < csp->block_size; i++) {
+                        slot->block[i] = *block_base_iw_ptr;
+                        block_base_iw_ptr++; /* Move pointer by 32 bits (next iw) */
+                }
+
+		/* iw is now in the updated cache block */
+		uint32_t data = slot->block[b_index];
+		return data;
+}
+
 /* Direct mapped lookup */
 uint32_t cache_lookup_dm(struct cache *csp, uint64_t addr)
 {
@@ -111,20 +132,7 @@ uint32_t cache_lookup_dm(struct cache *csp, uint64_t addr)
 		slot->valid = 1;
 		slot->tag = tag;
 
-		uint64_t block_base = addr_word - b_index;
-		/* Convert block base to a pointer to the iw in memory */
-		uint32_t *block_base_iw_ptr = (uint32_t *)(block_base << 2);
-
-		/*
-		 * Evict old data from the block and update with new data
-		 * retrieved from the memory bus
-		 */
-                for (int i = 0; i < csp->block_size; i++) {
-                        slot->block[i] = *block_base_iw_ptr;
-                        block_base_iw_ptr++; /* Move pointer by 32 bits (next iw) */
-                }
-		/* iw is now in the updated cache block */
-                data = slot->block[b_index];
+		data = evict_data_in_cache_block(csp, slot, addr_word, b_index);
 	}
 
 	return data;
@@ -217,25 +225,12 @@ uint32_t cache_lookup_sa(struct cache *csp, uint64_t addr)
 	}
 
 	if (!hit) {
-		uint64_t block_base = addr_word - b_index;
-		/* Convert block base to a pointer to the iw in memory */
-		uint32_t *block_base_iw_ptr = (uint32_t *)(block_base << 2);
-
-		/*
-		 * Evict old data from the block and update with new data
-		 * retrieved from the memory bus
-		 */
-                for (int i = 0; i < csp->block_size; i++) {
-                        slot->block[i] = *block_base_iw_ptr;
-                        block_base_iw_ptr++; /* Move pointer by 32 bits (next iw) */
-                }
-		/* iw is now in the updated cache block */
-
+		value = evict_data_in_cache_block(csp, slot, addr_word, b_index);
 		slot->tag = tag;
 		slot->valid = true;
+	} else {
+		value = slot->block[b_index];
 	}
-
-	value = slot->block[b_index];
 
 	slot->timestamp = csp->refs;
 	return value;
